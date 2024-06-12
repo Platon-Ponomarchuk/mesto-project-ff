@@ -1,4 +1,4 @@
-import { showPopup, closePopup } from "./toggle-popup.js";
+import { showPopup, closePopup, closePopupByOverlay } from "./modal.js";
 
 const editPopup = document.querySelector(".popup_type_edit");
 const editButton = document.querySelector(".profile__edit-button");
@@ -7,30 +7,15 @@ const nameInput = formElement.querySelector(".popup__input_type_name");
 const descInput = formElement.querySelector(".popup__input_type_description");
 
 editButton.addEventListener("click", function () {
-	getInputs();
+	fillInputs();
 	showPopup(editPopup);
-	document.addEventListener("keydown", keyClose);
 });
 
-editPopup.addEventListener("click", function (evt) {
-	if (
-		evt.target.classList.contains("popup") ||
-		evt.target.classList.contains("popup__close")
-	) {
-		closePopup(editPopup);
-	}
-});
+editPopup.addEventListener("click", closePopupByOverlay);
 
 formElement.addEventListener("submit", handleFormSubmit);
 
-function keyClose(evt) {
-	if (evt.key === "Escape") {
-		closePopup(editPopup);
-		document.removeEventListener("keydown", keyClose);
-	}
-}
-
-function getInputs() {
+function fillInputs() {
 	nameInput.value = document.querySelector(".profile__title").textContent;
 	descInput.value = document.querySelector(
 		".profile__description"
@@ -44,5 +29,5 @@ function handleFormSubmit(evt) {
 	document.querySelector(".profile__description").textContent =
 		descInput.value;
 
-	closePopup(editPopup);
+	closePopup();
 }

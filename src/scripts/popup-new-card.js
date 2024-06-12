@@ -1,5 +1,5 @@
-import { showPopup, closePopup } from "./toggle-popup.js";
-import { addCard } from "./create-cards.js";
+import { showPopup, closePopup, closePopupByOverlay } from "./modal.js";
+import { createCard } from "./card.js";
 
 const createPopup = document.querySelector(".popup_type_new-card");
 const createButton = document.querySelector(".profile__add-button");
@@ -10,33 +10,17 @@ const urlInput = formElement.querySelector(".popup__input_type_url");
 
 createButton.addEventListener("click", function () {
 	showPopup(createPopup);
-	document.addEventListener("keydown", keyClose);
 });
 
-createPopup.addEventListener("click", function (evt) {
-	if (
-		evt.target.classList.contains("popup") ||
-		evt.target.classList.contains("popup__close")
-	) {
-		closePopup(createPopup);
-	}
-});
+createPopup.addEventListener("click", closePopupByOverlay);
 
 formElement.addEventListener("submit", handleFormSubmit);
-
-function keyClose(evt) {
-	if (evt.key === "Escape") {
-		closePopup(createPopup);
-		document.removeEventListener("keydown", keyClose);
-	}
-}
 
 function handleFormSubmit(evt) {
 	evt.preventDefault();
 
-	cardList.prepend(addCard(nameCardInput.value, urlInput.value));
-	nameCardInput.value = "";
-	urlInput.value = "";
+	cardList.prepend(createCard(nameCardInput.value, urlInput.value));
+	formElement.reset();
 
-	closePopup(createPopup);
+	closePopup();
 }
