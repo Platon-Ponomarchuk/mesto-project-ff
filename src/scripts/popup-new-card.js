@@ -1,5 +1,5 @@
-import { showPopup, closePopup, closePopupByOverlay } from "./modal.js";
-import { createCard } from "./card.js";
+import { showPopup, closePopup, closePopupByOverlay, showImagePopup } from "./modal.js";
+import { createCard, like, deleteCard } from "./card.js";
 
 const createPopup = document.querySelector(".popup_type_new-card");
 const createButton = document.querySelector(".profile__add-button");
@@ -19,7 +19,7 @@ formElement.addEventListener("submit", handleFormSubmit);
 function handleFormSubmit(evt) {
 	evt.preventDefault();
 
-	cardList.prepend(createCard(nameCardInput.value, urlInput.value));
+	cardList.prepend(createCard(nameCardInput.value, urlInput.value, like, deleteCard, showImagePopup));
 	formElement.reset();
 
 	closePopup();
