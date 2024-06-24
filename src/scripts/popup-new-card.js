@@ -1,4 +1,5 @@
-import { showPopup, closePopup, closePopupByOverlay, showImagePopup } from "./modal.js";
+import { showPopup, closePopup, closePopupByOverlay } from "./modal.js";
+import { showImagePopup } from "./popup-image.js";
 import { createCard, like, deleteCard } from "./card.js";
 
 const createPopup = document.querySelector(".popup_type_new-card");

@@ -1,7 +1,4 @@
-import { showPopup, closePopupByOverlay } from "./modal.js";
-
 const cardTemplate = document.querySelector("#card-template").content;
-const imagePopup = document.querySelector(".popup_type_image");
 
 export function createCard(name, link, like, deleteCard, showImagePopup) {
 	const cardElement = cardTemplate.querySelector(".card").cloneNode(true);
@@ -19,8 +16,6 @@ export function createCard(name, link, like, deleteCard, showImagePopup) {
 	likeButton.addEventListener("click", like);
 
 	imageElement.addEventListener("click", showImagePopup);
-
-	imagePopup.addEventListener("click", closePopupByOverlay);
 
 	return cardElement;
 }

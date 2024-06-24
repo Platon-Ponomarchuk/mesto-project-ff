@@ -4,7 +4,7 @@ import "./popup-edit.js";
 import "./popup-new-card.js";
 import { createCard, like, deleteCard } from "./card.js";
 import "./modal.js";
-import { showImagePopup } from "./modal.js";
+import { showImagePopup } from "./popup-image.js";
 
 const cardList = document.querySelector(".places__list");
 
