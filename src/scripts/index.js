@@ -1,14 +1,15 @@
 import "../pages/index.css";
-import { initialCards } from "./cards.js";
 import "./popup-edit.js";
 import "./popup-new-card.js";
-import { createCard, like, deleteCard } from "./card.js";
+import "./popup-delete.js";
 import "./modal.js";
-import { showImagePopup } from "./popup-image.js";
+import "./popup-avatar.js";
+import { enableValidation, validationConfig } from "./validation.js";
+import "./api.js";
+import { getCards, getUser } from "./api.js";
+import "./popup-delete.js";
 
-const cardList = document.querySelector(".places__list");
+getUser();
+getCards();
 
-initialCards.forEach((item) => {
-	const newCard = createCard(item.name, item.link, like, deleteCard, showImagePopup);
-	cardList.append(newCard);
-});
+enableValidation(validationConfig);

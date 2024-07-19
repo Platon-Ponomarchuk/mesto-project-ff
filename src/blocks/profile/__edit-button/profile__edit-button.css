@@ -1,19 +1,21 @@
+@import url('./_avatar/profile__edit-button_avatar.css');
+
 .profile__edit-button {
-  width: 24px;
-  height: 24px;
-  background: transparent url('../../../images/edit-icon.svg') center no-repeat;
-  background-size: 10px 10px;
-  border: 1px solid #fff;
   grid-area: button;
   align-self: center;
-  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  border: 1px solid #fff;
+  padding: 0;
+  background: transparent url('../../../images/edit-icon.svg') center no-repeat;
+  background-size: 10px 10px;
   -webkit-transition: 0.3s;
   -moz-transition: 0.3s;
   -ms-transition: 0.3s;
   -o-transition: 0.3s;
   transition: 0.3s;
-  padding: 0;
-  margin: 0;
+  cursor: pointer;
 }
 
 .profile__edit-button:hover {

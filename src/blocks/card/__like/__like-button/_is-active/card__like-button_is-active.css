@@ -1,0 +1,20 @@
+.card__like-button_is-active {
+	width: 21px;
+	height: 18px;
+	margin: 0;
+	border: none;
+	padding: 0;
+	background: transparent url("../../../../../images/like-active.svg") no-repeat;
+
+	background-size: 21px 18px;
+	-webkit-transition: 0.3s;
+	-moz-transition: 0.3s;
+	-ms-transition: 0.3s;
+	-o-transition: 0.3s;
+	transition: 0.3s;
+	cursor: pointer;
+}
+
+.card__like-button_is-active:hover {
+	opacity: 0.6;
+}

@@ -1,4 +1,11 @@
-import { showPopup, closePopup, closePopupByOverlay } from "./modal.js";
+import {
+	showPopup,
+	closePopup,
+	closePopupByOverlay,
+	loading,
+} from "./modal.js";
+import { clearValidation, validationConfig } from "./validation.js";
+import { setUser } from "./api.js";
 
 const editPopup = document.querySelector(".popup_type_edit");
 const editButton = document.querySelector(".profile__edit-button");
@@ -8,6 +15,7 @@ const descInput = formElement.querySelector(".popup__input_type_description");
 
 editButton.addEventListener("click", function () {
 	fillInputs();
+	clearValidation(formElement, validationConfig);
 	showPopup(editPopup);
 });
 
@@ -23,11 +31,11 @@ function fillInputs() {
 }
 
 function handleFormSubmit(evt) {
+	loading(true);
 	evt.preventDefault();
 
-	document.querySelector(".profile__title").textContent = nameInput.value;
-	document.querySelector(".profile__description").textContent =
-		descInput.value;
-
-	closePopup();
+	setUser(nameInput.value, descInput.value).then(() => {
+		loading(false);
+		closePopup();
+	});
 }
