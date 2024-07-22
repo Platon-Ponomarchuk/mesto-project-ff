@@ -1,6 +1,3 @@
-import { createCard, like } from "./card.js";
-import { showImagePopup } from "./popup-image.js";
-
 const config = {
 	baseUrl: "https://nomoreparties.co/v1/wff-cohort-18",
 	headers: {
@@ -8,49 +5,26 @@ const config = {
 		"Content-Type": "application/json",
 	},
 };
-export let userGlobal = {};
 
-function getUserId() {
-	return fetch(`${config.baseUrl}/users/me`, {
-		method: "GET",
-		headers: config.headers,
-	})
-		.then((res) => {
-			if (res.ok) {
-				return res.json();
+function checkResponse(res) {
+	if (res.ok) {
+		return res.json();
+	}
+	return Promise.reject(`Ошибка ${res.status}`);
+}
+
+export function isLiked(array, user) {
+	let res = false;
+
+	if (array.length > 0) {
+		array.forEach((elm) => {
+			if (elm._id == user._id) {
+				res = true;
 			}
-			return Promise.reject(`Ошибка: ${res.status}`);
-		})
-		.then((user) => user._id);
-}
+		});
+	}
 
-function isLiked(array) {
-	const userID = getUserId();
-
-	return Promise.all([userID]).then(() => {
-		let ans = false;
-		if (array.length > 0) {
-			array.forEach((elm) => {
-				if (elm._id == userGlobal._id) {
-					ans = true;
-					return ans;
-				}
-			});
-		}
-		return ans;
-	});
-}
-
-function isUsersCard(cardUserId) {
-	const userID = getUserId();
-
-	return Promise.all([userID]).then((result) => {
-		if (result == cardUserId) {
-			return true;
-		} else {
-			return false;
-		}
-	});
+	return res;
 }
 
 export function getUser() {
@@ -59,24 +33,9 @@ export function getUser() {
 		headers: config.headers,
 	})
 		.then((res) => {
-			if (res.ok) {
-				return res.json();
-			}
-			return Promise.reject(`Ошибка: ${res.status}`);
+			return checkResponse(res);
 		})
-		.then((user) => {
-			userGlobal = user;
-
-			const avatarElement = document.querySelector(".profile__image");
-			const nameElement = document.querySelector(".profile__title");
-			const descriptionElement = document.querySelector(
-				".profile__description"
-			);
-
-			avatarElement.src = user.avatar;
-			nameElement.textContent = user.name;
-			descriptionElement.textContent = user.about;
-		});
+		.catch((err) => console.log(err));
 }
 
 export function getCards() {
@@ -85,52 +44,20 @@ export function getCards() {
 		headers: config.headers,
 	})
 		.then((res) => {
-			if (res.ok) {
-				return res.json();
-			}
-			return Promise.reject(`Ошибка: ${res.status}`);
+			return checkResponse(res);
 		})
-		.then((result) => {
-			const cardList = document.querySelector(".places__list");
-			let usersCard;
-			result.forEach((item) => {
-				usersCard = isUsersCard(item.owner._id);
-
-				Promise.all([usersCard, isLiked(item.likes)]).then((result) => {
-					const newCard = createCard(
-						item.name,
-						item.link,
-						item.likes.length,
-						like,
-						showImagePopup,
-						result[1],
-						result[0],
-						item
-					);
-					cardList.append(newCard);
-				});
-			});
-		});
+		.catch((err) => console.log(err));
 }
 
-function updateCard(cardId, counter) {
+function updateCard() {
 	return fetch(`${config.baseUrl}/cards`, {
 		method: "GET",
 		headers: config.headers,
 	})
 		.then((res) => {
-			if (res.ok) {
-				return res.json();
-			}
-			return Promise.reject(`Ошибка: ${res.status}`);
+			return checkResponse(res);
 		})
-		.then((result) => {
-			result.forEach((elm) => {
-				if (elm._id == cardId) {
-					counter.textContent = elm.likes.length;
-				}
-			});
-		});
+		.catch((err) => console.log(err));
 }
 
 export function deleteCard(cardId) {
@@ -149,7 +76,13 @@ export function addLike(cardId, newLikes, counter) {
 		}),
 	})
 		.then(() => {
-			updateCard(cardId, counter);
+			updateCard().then((result) => {
+				result.forEach((elm) => {
+					if (elm._id == cardId) {
+						counter.textContent = elm.likes.length;
+					}
+				});
+			});
 		})
 		.catch((err) => console.log(err));
 }
@@ -163,7 +96,13 @@ export function deleteLike(cardId, newLikes, counter) {
 		}),
 	})
 		.then(() => {
-			updateCard(cardId, counter);
+			updateCard().then((result) => {
+				result.forEach((elm) => {
+					if (elm._id == cardId) {
+						counter.textContent = elm.likes.length;
+					}
+				});
+			});
 		})
 		.catch((err) => console.log(err));
 }
@@ -199,7 +138,11 @@ export function setUserAvatar(newUrl) {
 		.catch((err) => console.log(err));
 }
 
-export function addCard(cardName, cardLink) {
+export function addCard(
+	cardName,
+	cardLink,
+	cardList
+) {
 	return fetch(`${config.baseUrl}/cards`, {
 		method: "POST",
 		headers: config.headers,
@@ -209,7 +152,7 @@ export function addCard(cardName, cardLink) {
 		}),
 	})
 		.then(() => {
-			document.querySelector(".places__list").replaceChildren();
+			cardList.replaceChildren();
 			getCards();
 		})
 		.catch((err) => console.log(err));

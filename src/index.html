@@ -53,6 +53,7 @@
 						<input
 							type="text"
 							name="name"
+							pattern = "^[a-zA-Zа-яА-ЯёЁ\-\s]+$"
 							class="popup__input popup__input_type_name"
 							placeholder="Имя"
 							minlength="2"
@@ -64,10 +65,12 @@
 						<input
 							type="text"
 							name="description"
+							pattern = "^[a-zA-Zа-яА-ЯёЁ\-\s]+$"
 							class="popup__input popup__input_type_description"
 							placeholder="Занятие"
 							minlength="2"
 							maxlength="200"
+							data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
 							required
 						/>
 						<span class="popup__error error_type_description"></span>
@@ -85,6 +88,7 @@
 						<input
 							type="text"
 							name="place-name"
+							pattern = "^[a-zA-Zа-яА-ЯёЁ\-\s]+$"
 							class="popup__input popup__input_type_card-name"
 							placeholder="Название"
 							minlength="2"

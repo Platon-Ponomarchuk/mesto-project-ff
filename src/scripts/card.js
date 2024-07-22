@@ -1,10 +1,7 @@
-import { showPopup } from "./modal.js";
-import { addLike, userGlobal, deleteLike } from "./api.js";
+import { addLike, deleteLike } from "./api.js";
 
 const cardTemplate = document.querySelector("#card-template").content;
-export let userCards = [];
-let cards = [];
-export let currentCard = null;
+export let currentCard = {};
 
 export function createCard(
 	name,
@@ -12,9 +9,12 @@ export function createCard(
 	likeCount,
 	like,
 	showImagePopup,
+	showPopup,
 	liked,
-	usersCard,
-	json
+	user,
+	creatorId,
+	json,
+	deleteCard
 ) {
 	const cardElement = cardTemplate.querySelector(".card").cloneNode(true);
 	const deleteButton = cardElement.querySelector(".card__delete-button");
@@ -22,7 +22,6 @@ export function createCard(
 	const titleElement = cardElement.querySelector(".card__title");
 	const likeButton = cardElement.querySelector(".card__like-button");
 	const likeCounter = cardElement.querySelector(".card__like-count");
-	const deletePopup = document.querySelector(".popup_type_delete");
 
 	imageElement.src = link;
 	imageElement.alt = "Картинка " + name;
@@ -34,55 +33,16 @@ export function createCard(
 		likeButton.classList.remove("card__like-button");
 	}
 
-	cards.push({
-		json: json,
-		card: cardElement,
-	});
-
-	if (!usersCard) {
+	if (user._id != creatorId) {
 		deleteButton.remove();
 	} else {
-		userCards.push({
-			json: json,
-			card: cardElement,
-		});
-
 		deleteButton.addEventListener("click", function (evt) {
-			currentCard = evt.target.closest(".card");
-			showPopup(deletePopup);
+			deleteCard(evt, json, showPopup);
 		});
 	}
 
 	likeButton.addEventListener("click", (evt) => {
-		currentCard = evt.target.closest(".card");
-
-		cards.forEach((element) => {
-			if (currentCard == element.card) {
-				if (
-					likeButton.classList.contains("card__like-button_is-active")
-				) {
-					like(evt.target);
-					element.json.likes.forEach((user, index) => {
-						if (user._id == userGlobal._id) {
-							element.json.likes.splice(index, 1);
-						}
-					});
-					deleteLike(
-						element.json._id,
-						element.json.likes,
-						currentCard.querySelector(".card__like-count")
-					);
-				} else {
-					like(evt.target);
-					element.json.likes.push(userGlobal);
-					addLike(
-						element.json._id,
-						element.json.likes,
-						currentCard.querySelector(".card__like-count")
-					);
-				}
-			}
-		});
+		like(evt, json, likeButton, user);
 	});
 
 	imageElement.addEventListener("click", showImagePopup);
@@ -90,7 +50,43 @@ export function createCard(
 	return cardElement;
 }
 
-export function like(target) {
-	target.classList.toggle("card__like-button_is-active");
-	target.classList.toggle("card__like-button");
+export function like(evt, json, likeButton, user) {
+	currentCard = {
+		card: evt.target.closest(".card"),
+		info: json,
+	};
+
+	if (likeButton.classList.contains("card__like-button_is-active")) {
+		json.likes.forEach((result, index) => {
+			if (result._id == user._id) {
+				json.likes.splice(index, 1);
+			}
+		});
+		deleteLike(
+			json._id,
+			json.likes,
+			currentCard.card.querySelector(".card__like-count")
+		).then(() => {
+			evt.target.classList.toggle("card__like-button_is-active");
+			evt.target.classList.toggle("card__like-button");
+		});
+	} else {
+		json.likes.push(user);
+		addLike(
+			json._id,
+			json.likes,
+			currentCard.card.querySelector(".card__like-count")
+		).then(() => {
+			evt.target.classList.toggle("card__like-button_is-active");
+			evt.target.classList.toggle("card__like-button");
+		});
+	}
+}
+
+export function deleteCard(evt, json, showPopup) {
+	currentCard = {
+		card: evt.target.closest(".card"),
+		info: json,
+	};
+	showPopup(document.querySelector(".popup_type_delete"));
 }

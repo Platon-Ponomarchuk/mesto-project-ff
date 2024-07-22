@@ -29,13 +29,3 @@ export function closePopupByOverlay(evt) {
 		closePopup();
 	}
 }
-
-export function loading(isLoading) {
-	const openedPopup = document.querySelector(".popup_is-opened");
-	const button = openedPopup.querySelector(".popup__button");
-	if (isLoading) {
-		button.textContent = "Сохранение...";
-	} else {
-		button.textContent = "Сохранить";
-	}
-}

@@ -21,16 +21,17 @@ function hideInputError(formElement, inputElement, validationConfig) {
 	errorElement.textContent = "";
 }
 
+function disableButton(buttonElement, validationConfig) {
+	buttonElement.disabled = true;
+	buttonElement.classList.add(validationConfig.inactiveButtonClass);
+}
+
 export function checkInputValidity(
 	formElement,
 	inputElement,
 	validationConfig
 ) {
-	const regex = /[^a-zа-яё\s-]/i;
-	if (
-		(inputElement.name == "name" || inputElement.name == "place-name") &&
-		regex.test(inputElement.value)
-	) {
+	if (inputElement.validity.patternMismatch) {
 		inputElement.setCustomValidity(inputElement.dataset.errorMessage);
 	} else {
 		inputElement.setCustomValidity("");
@@ -72,8 +73,7 @@ function hasInvalidInput(inputList) {
 
 function toggleButtonState(inputList, buttonElement, validationConfig) {
 	if (hasInvalidInput(inputList)) {
-		buttonElement.disabled = true;
-		buttonElement.classList.add(validationConfig.inactiveButtonClass);
+		disableButton(buttonElement, validationConfig);
 	} else {
 		buttonElement.disabled = false;
 		buttonElement.classList.remove(validationConfig.inactiveButtonClass);
@@ -101,16 +101,6 @@ export function clearValidation(profileForm, validationConfig) {
 			validationConfig.submitButtonSelector
 		);
 
-		buttonElement.disabled = true;
-		buttonElement.classList.add(validationConfig.inactiveButtonClass);
+		disableButton(buttonElement, validationConfig);
 	});
 }
-
-export const validationConfig = {
-	formSelector: ".popup__form",
-	inputSelector: ".popup__input",
-	submitButtonSelector: ".popup__button",
-	inactiveButtonClass: "popup__button_disabled",
-	inputErrorClass: "popup__input_type_error",
-	errorClass: "popup__error_visible",
-};

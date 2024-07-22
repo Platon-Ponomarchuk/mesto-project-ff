@@ -1,5 +1,5 @@
 import { closePopupByOverlay, closePopup } from "./modal.js";
-import { userCards, currentCard } from "./card.js";
+import { currentCard } from "./card.js";
 import { deleteCard } from "./api.js";
 
 const deletePopup = document.querySelector(".popup_type_delete");
@@ -10,12 +10,8 @@ deletePopup.addEventListener("click", closePopupByOverlay);
 popupButton.addEventListener("click", (evt) => {
 	evt.preventDefault();
 
-	userCards.forEach((element) => {
-		if (currentCard == element.card) {
-			deleteCard(element.json._id);
-			currentCard.remove();
-		}
-	});
+	deleteCard(currentCard.info._id);
+	currentCard.card.remove();
 
 	closePopup(deletePopup);
 });

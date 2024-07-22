@@ -1,11 +1,7 @@
-import {
-	showPopup,
-	closePopup,
-	closePopupByOverlay,
-	loading,
-} from "./modal.js";
-import { clearValidation, validationConfig } from "./validation.js";
+import { showPopup, closePopup, closePopupByOverlay } from "./modal.js";
+import { clearValidation } from "./validation.js";
 import { setUser } from "./api.js";
+import { validationConfig, loading } from "./index.js";
 
 const editPopup = document.querySelector(".popup_type_edit");
 const editButton = document.querySelector(".profile__edit-button");
@@ -34,8 +30,14 @@ function handleFormSubmit(evt) {
 	loading(true);
 	evt.preventDefault();
 
-	setUser(nameInput.value, descInput.value).then(() => {
-		loading(false);
-		closePopup();
-	});
+	setUser(nameInput.value, descInput.value)
+		.then(() => {
+			closePopup();
+		})
+		.catch((err) => {
+			console.log(err);
+		})
+		.finally(() => {
+			loading(false);
+		});
 }

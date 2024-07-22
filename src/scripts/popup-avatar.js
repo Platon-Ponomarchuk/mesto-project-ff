@@ -1,11 +1,7 @@
-import {
-	showPopup,
-	closePopup,
-	closePopupByOverlay,
-	loading,
-} from "./modal.js";
-import { clearValidation, validationConfig } from "./validation.js";
+import { showPopup, closePopup, closePopupByOverlay } from "./modal.js";
+import { clearValidation } from "./validation.js";
 import { setUserAvatar } from "./api.js";
+import { loading } from "./index.js";
 
 const avatarPopup = document.querySelector(".popup_type_new-avatar");
 const avatarButton = document.querySelector(".profile__edit-button_avatar");
@@ -25,8 +21,14 @@ function handleFormSubmit(evt) {
 	loading(true);
 	evt.preventDefault();
 
-	setUserAvatar(urlInput.value).then(() => {
-		loading(false);
-		closePopup();
-	});
+	setUserAvatar(urlInput.value)
+		.then(() => {
+			closePopup();
+		})
+		.catch((err) => {
+			console.log(err);
+		})
+		.finally(() => {
+			loading(false);
+		});
 }
