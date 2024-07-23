@@ -1,5 +1,5 @@
 import "../pages/index.css";
-import { createCard, like, deleteCard } from "./card.js";
+import { createCard, like, deleteCard, isLiked, updateCard } from "./card.js";
 import "./popup-edit.js";
 import "./popup-new-card.js";
 import "./popup-delete.js";
@@ -7,10 +7,14 @@ import { showImagePopup } from "./popup-image.js";
 import { showPopup } from "./modal.js";
 import "./popup-avatar.js";
 import { enableValidation } from "./validation.js";
-import { getUser, getCards, isLiked } from "./api.js";
+import { getUser, getCards } from "./api.js";
 import "./popup-delete.js";
 
-let user;
+export let user;
+export let currentCard = {
+	card: null,
+	info: null,
+};
 export const cardList = document.querySelector(".places__list");
 export const avatarElement = document.querySelector(".profile__image");
 export const nameElement = document.querySelector(".profile__title");
@@ -37,31 +41,26 @@ export function loading(isLoading) {
 	}
 }
 
-getUser()
+Promise.all([getUser(), getCards()])
 	.then((result) => {
-		avatarElement.src = result.avatar;
-		nameElement.textContent = result.name;
-		descriptionElement.textContent = result.about;
+		avatarElement.src = result[0].avatar;
+		nameElement.textContent = result[0].name;
+		descriptionElement.textContent = result[0].about;
 
-		user = result;
+		user = result[0];
 
-		getCards().then((result) => {
-			result.forEach((item) => {
-				const newCard = createCard(
-					item.name,
-					item.link,
-					item.likes.length,
-					like,
-					showImagePopup,
-					showPopup,
-					isLiked(item.likes, user),
-					user,
-					item.owner._id,
-					item,
-					deleteCard
-				);
-				cardList.append(newCard);
-			});
+		result[1].forEach((item) => {
+			const newCard = createCard(
+				item,
+				like,
+				showImagePopup,
+				showPopup,
+				user,
+				deleteCard,
+				isLiked,
+				updateCard
+			);
+			cardList.append(newCard);
 		});
 	})
 	.catch((err) => console.log(err));

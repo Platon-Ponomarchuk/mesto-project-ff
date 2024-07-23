@@ -13,98 +13,55 @@ function checkResponse(res) {
 	return Promise.reject(`Ошибка ${res.status}`);
 }
 
-export function isLiked(array, user) {
-	let res = false;
-
-	if (array.length > 0) {
-		array.forEach((elm) => {
-			if (elm._id == user._id) {
-				res = true;
-			}
-		});
-	}
-
-	return res;
-}
-
 export function getUser() {
 	return fetch(`${config.baseUrl}/users/me`, {
 		method: "GET",
 		headers: config.headers,
-	})
-		.then((res) => {
-			return checkResponse(res);
-		})
-		.catch((err) => console.log(err));
+	}).then((res) => {
+		return checkResponse(res);
+	});
 }
 
 export function getCards() {
 	return fetch(`${config.baseUrl}/cards`, {
 		method: "GET",
 		headers: config.headers,
-	})
-		.then((res) => {
-			return checkResponse(res);
-		})
-		.catch((err) => console.log(err));
-}
-
-function updateCard() {
-	return fetch(`${config.baseUrl}/cards`, {
-		method: "GET",
-		headers: config.headers,
-	})
-		.then((res) => {
-			return checkResponse(res);
-		})
-		.catch((err) => console.log(err));
+	}).then((res) => {
+		return checkResponse(res);
+	});
 }
 
 export function deleteCard(cardId) {
 	return fetch(`${config.baseUrl}/cards/${cardId}`, {
 		method: "DELETE",
 		headers: config.headers,
-	}).catch((err) => console.log(err));
+	}).then((res) => {
+		return checkResponse(res);
+	});
 }
 
-export function addLike(cardId, newLikes, counter) {
+export function addLike(cardId, newLikes) {
 	return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
 		method: "PUT",
 		headers: config.headers,
 		body: JSON.stringify({
 			likes: newLikes,
 		}),
-	})
-		.then(() => {
-			updateCard().then((result) => {
-				result.forEach((elm) => {
-					if (elm._id == cardId) {
-						counter.textContent = elm.likes.length;
-					}
-				});
-			});
-		})
-		.catch((err) => console.log(err));
+	}).then((res) => {
+		return checkResponse(res);
+	});
 }
 
-export function deleteLike(cardId, newLikes, counter) {
+export function deleteLike(cardId, newLikes) {
 	return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
 		method: "DELETE",
 		headers: config.headers,
 		body: JSON.stringify({
 			likes: newLikes,
 		}),
-	})
-		.then(() => {
-			updateCard().then((result) => {
-				result.forEach((elm) => {
-					if (elm._id == cardId) {
-						counter.textContent = elm.likes.length;
-					}
-				});
-			});
-		})
-		.catch((err) => console.log(err));
+	}).then((res) => {
+		return checkResponse(res);
+	});
 }
 
 export function setUser(newName, newAbout) {
@@ -116,11 +73,9 @@ export function setUser(newName, newAbout) {
 			about: newAbout,
 		}),
 	})
-		.then((res) => res.json())
-		.then(() => {
-			getUser();
+		.then((res) => {
+			return checkResponse(res);
 		})
-		.catch((err) => console.log(err));
 }
 
 export function setUserAvatar(newUrl) {
@@ -131,18 +86,12 @@ export function setUserAvatar(newUrl) {
 			avatar: newUrl,
 		}),
 	})
-		.then((res) => res.json())
-		.then(() => {
-			getUser();
+		.then((res) => {
+			return checkResponse(res);
 		})
-		.catch((err) => console.log(err));
 }
 
-export function addCard(
-	cardName,
-	cardLink,
-	cardList
-) {
+export function addCard(cardName, cardLink) {
 	return fetch(`${config.baseUrl}/cards`, {
 		method: "POST",
 		headers: config.headers,
@@ -151,9 +100,7 @@ export function addCard(
 			link: cardLink,
 		}),
 	})
-		.then(() => {
-			cardList.replaceChildren();
-			getCards();
+		.then((res) => {
+			return checkResponse(res);
 		})
-		.catch((err) => console.log(err));
 }

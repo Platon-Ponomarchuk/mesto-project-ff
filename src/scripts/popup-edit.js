@@ -1,7 +1,13 @@
 import { showPopup, closePopup, closePopupByOverlay } from "./modal.js";
 import { clearValidation } from "./validation.js";
 import { setUser } from "./api.js";
-import { validationConfig, loading } from "./index.js";
+import {
+	validationConfig,
+	loading,
+	nameElement,
+	descriptionElement,
+	user
+} from "./index.js";
 
 const editPopup = document.querySelector(".popup_type_edit");
 const editButton = document.querySelector(".profile__edit-button");
@@ -31,7 +37,11 @@ function handleFormSubmit(evt) {
 	evt.preventDefault();
 
 	setUser(nameInput.value, descInput.value)
-		.then(() => {
+		.then((result) => {
+			nameElement.textContent = result.name;
+			descriptionElement.textContent = result.about;
+			user.name = result.about;
+			user.about = result.about;
 			closePopup();
 		})
 		.catch((err) => {

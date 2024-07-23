@@ -1,7 +1,9 @@
 import { showPopup, closePopup, closePopupByOverlay } from "./modal.js";
+import { showImagePopup } from "./popup-image.js";
+import { createCard, like, deleteCard, isLiked, updateCard } from "./card.js";
 import { clearValidation } from "./validation.js";
-import { addCard } from "./api.js";
-import { loading, cardList, validationConfig} from "./index.js";
+import { addCard, getCards } from "./api.js";
+import { loading, cardList, validationConfig, user } from "./index.js";
 
 const createPopup = document.querySelector(".popup_type_new-card");
 const createButton = document.querySelector(".profile__add-button");
@@ -21,16 +23,33 @@ function handleFormSubmit(evt) {
 	loading(true);
 	evt.preventDefault();
 
-	addCard(nameCardInput.value, urlInput.value, cardList)
+	addCard(nameCardInput.value, urlInput.value)
 		.then(() => {
-			closePopup();
-			formElement.reset();
-			clearValidation(formElement, validationConfig);
+			getCards()
+				.then((result) => {
+					cardList.replaceChildren();
+					result.forEach((item) => {
+						const newCard = createCard(
+							item,
+							like,
+							showImagePopup,
+							showPopup,
+							user,
+							deleteCard,
+							isLiked,
+							updateCard
+						);
+						cardList.append(newCard);
+					});
+					closePopup();
+					formElement.reset();
+					clearValidation(formElement, validationConfig);
+				})
+				.finally(() => {
+					loading(false);
+				});
 		})
 		.catch((err) => {
 			console.log(err);
-		})
-		.finally(() => {
-			loading(false);
 		});
 }
