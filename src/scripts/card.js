@@ -1,5 +1,4 @@
-import { addLike, deleteLike, getCards } from "./api.js";
-import { currentCard } from "./index.js";
+import { addLike, deleteLike } from "./api.js";
 
 let cardTemplate = document.querySelector("#card-template").content;
 
@@ -9,9 +8,8 @@ export function createCard(
 	showImagePopup,
 	showPopup,
 	user,
-	deleteCard,
-	isLiked,
-	updateCard
+	deleteUsersCard,
+	isLiked
 ) {
 	let cardElement = cardTemplate.querySelector(".card").cloneNode(true);
 	let deleteButton = cardElement.querySelector(".card__delete-button");
@@ -34,7 +32,7 @@ export function createCard(
 		deleteButton.remove();
 	} else {
 		deleteButton.addEventListener("click", () => {
-			deleteCard(item, showPopup, cardElement);
+			deleteUsersCard(item, showPopup, cardElement);
 		});
 	}
 
@@ -47,38 +45,21 @@ export function createCard(
 	return cardElement;
 }
 
-export function like(item, likeButton, user, likeCounter, cardElement) {
-	currentCard.card = cardElement;
-	currentCard.info = item;
-
+export function like(item, likeButton, user, likeCounter) {
 	if (likeButton.classList.contains("card__like-button_is-active")) {
-		item.likes.forEach((result, index) => {
-			if (result._id == user._id) {
-				item.likes.splice(index, 1);
-			}
-		});
-
-		deleteLike(item._id, item.likes, likeCounter)
+		deleteLike(item._id, item.likes)
 			.then((result) => {
 				updateCard(result, likeCounter, likeButton);
 			})
 			.catch((err) => console.log(err));
 
 	} else {
-		item.likes.push(user);
-		
-		addLike(item._id, item.likes, likeCounter)
+		addLike(item._id, item.likes)
 			.then((result) => {
 				updateCard(result, likeCounter, likeButton);
 			})
 			.catch((err) => console.log(err));
 	}
-}
-
-export function deleteCard(item, showPopup, cardElement) {
-	currentCard.card = cardElement;
-	currentCard.info = item;
-	showPopup(document.querySelector(".popup_type_delete"));
 }
 
 export function isLiked(array, user) {
@@ -95,7 +76,7 @@ export function isLiked(array, user) {
 	return res;
 }
 
-export function updateCard(result, counter, likeButton) {
+function updateCard(result, counter, likeButton) {
 	likeButton.classList.toggle("card__like-button_is-active");
 	likeButton.classList.toggle("card__like-button");
 	counter.textContent = result.likes.length;

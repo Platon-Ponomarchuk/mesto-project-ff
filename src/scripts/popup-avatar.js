@@ -1,7 +1,7 @@
 import { showPopup, closePopup, closePopupByOverlay } from "./modal.js";
 import { clearValidation } from "./validation.js";
 import { setUserAvatar } from "./api.js";
-import { loading, validationConfig, avatarElement, user } from "./index.js";
+import { loading, validationConfig, avatarElement } from "./index.js";
 
 const avatarPopup = document.querySelector(".popup_type_new-avatar");
 const avatarButton = document.querySelector(".profile__edit-button_avatar");
@@ -24,7 +24,6 @@ function handleFormSubmit(evt) {
 	setUserAvatar(urlInput.value)
 		.then((result) => {
 			avatarElement.src = result.avatar;
-			user.avatar = result.avatar;
 			closePopup();
 		})
 		.catch((err) => {

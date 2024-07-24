@@ -1,9 +1,10 @@
 import { showPopup, closePopup, closePopupByOverlay } from "./modal.js";
 import { showImagePopup } from "./popup-image.js";
-import { createCard, like, deleteCard, isLiked, updateCard } from "./card.js";
+import { createCard, like, isLiked } from "./card.js";
 import { clearValidation } from "./validation.js";
-import { addCard, getCards } from "./api.js";
-import { loading, cardList, validationConfig, user } from "./index.js";
+import { addCard } from "./api.js";
+import { loading, cardList, validationConfig } from "./index.js";
+import { deleteUsersCard } from "./popup-delete.js";
 
 const createPopup = document.querySelector(".popup_type_new-card");
 const createButton = document.querySelector(".profile__add-button");
@@ -24,32 +25,25 @@ function handleFormSubmit(evt) {
 	evt.preventDefault();
 
 	addCard(nameCardInput.value, urlInput.value)
-		.then(() => {
-			getCards()
-				.then((result) => {
-					cardList.replaceChildren();
-					result.forEach((item) => {
-						const newCard = createCard(
-							item,
-							like,
-							showImagePopup,
-							showPopup,
-							user,
-							deleteCard,
-							isLiked,
-							updateCard
-						);
-						cardList.append(newCard);
-					});
-					closePopup();
-					formElement.reset();
-					clearValidation(formElement, validationConfig);
-				})
-				.finally(() => {
-					loading(false);
-				});
+		.then((result) => {
+			const newCard = createCard(
+				result,
+				like,
+				showImagePopup,
+				showPopup,
+				result.owner,
+				deleteUsersCard,
+				isLiked
+			);
+			cardList.prepend(newCard);
+			closePopup();
+			formElement.reset();
+			clearValidation(formElement, validationConfig);
 		})
 		.catch((err) => {
 			console.log(err);
+		})
+		.finally(() => {
+			loading(false);
 		});
 }

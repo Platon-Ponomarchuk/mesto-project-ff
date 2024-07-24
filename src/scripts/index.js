@@ -1,8 +1,8 @@
 import "../pages/index.css";
-import { createCard, like, deleteCard, isLiked, updateCard } from "./card.js";
+import { createCard, like, isLiked } from "./card.js";
 import "./popup-edit.js";
 import "./popup-new-card.js";
-import "./popup-delete.js";
+import {deleteUsersCard} from "./popup-delete.js";
 import { showImagePopup } from "./popup-image.js";
 import { showPopup } from "./modal.js";
 import "./popup-avatar.js";
@@ -10,11 +10,6 @@ import { enableValidation } from "./validation.js";
 import { getUser, getCards } from "./api.js";
 import "./popup-delete.js";
 
-export let user;
-export let currentCard = {
-	card: null,
-	info: null,
-};
 export const cardList = document.querySelector(".places__list");
 export const avatarElement = document.querySelector(".profile__image");
 export const nameElement = document.querySelector(".profile__title");
@@ -42,23 +37,20 @@ export function loading(isLoading) {
 }
 
 Promise.all([getUser(), getCards()])
-	.then((result) => {
-		avatarElement.src = result[0].avatar;
-		nameElement.textContent = result[0].name;
-		descriptionElement.textContent = result[0].about;
+	.then(([userData, cardsArray]) => {
+		avatarElement.src = userData.avatar;
+		nameElement.textContent = userData.name;
+		descriptionElement.textContent = userData.about;
 
-		user = result[0];
-
-		result[1].forEach((item) => {
+		cardsArray.forEach((item) => {
 			const newCard = createCard(
 				item,
 				like,
 				showImagePopup,
 				showPopup,
-				user,
-				deleteCard,
-				isLiked,
-				updateCard
+				userData,
+				deleteUsersCard,
+				isLiked
 			);
 			cardList.append(newCard);
 		});

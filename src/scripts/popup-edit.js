@@ -6,7 +6,6 @@ import {
 	loading,
 	nameElement,
 	descriptionElement,
-	user
 } from "./index.js";
 
 const editPopup = document.querySelector(".popup_type_edit");
@@ -40,8 +39,6 @@ function handleFormSubmit(evt) {
 		.then((result) => {
 			nameElement.textContent = result.name;
 			descriptionElement.textContent = result.about;
-			user.name = result.about;
-			user.about = result.about;
 			closePopup();
 		})
 		.catch((err) => {
